@@ -12,7 +12,7 @@ namespace AI {
         [SerializeField] private float cellSize = 1f;
 
         [Header("Node prefab")]
-        [SerializeField] private GameObject cellPrefab;
+        [SerializeField] private GameObject nodePrefab;
 
         private Node[,] nodes;
 
@@ -22,8 +22,8 @@ namespace AI {
             for(int x = 0; x < width; x++) {
                 for(int y = 0; y < height; y++) {
                     Vector2Int pos = new(x, y);
-                    nodes[x, y] = new Node(true, pos);
-                    Instantiate(cellPrefab, new Vector3(pos.x, pos.y, 0), Quaternion.identity, transform);
+                    GameObject instance = Instantiate(nodePrefab, new Vector3(pos.x, pos.y, 0), Quaternion.identity, transform);
+                    nodes[x, y] = new Node(true, pos, instance.GetComponent<NodePrefab>().spriteRenderer);
                 }
             }
         }
@@ -39,10 +39,7 @@ namespace AI {
         public List<Node> GetNeighbors(Node node) {
             List<Node> neighbors = new();
 
-            Vector2Int[] dirs = {
-            Vector2Int.up, Vector2Int.down,
-            Vector2Int.left, Vector2Int.right
-        };
+            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
             foreach(var d in dirs) {
                 var n = GetNode(node.GridPos + d);

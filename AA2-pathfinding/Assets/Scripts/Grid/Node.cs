@@ -6,14 +6,23 @@ namespace AI {
         public bool Walkable { get; private set; }
         public Vector2Int GridPos { get; private set; }
 
-        private Node Parent;
+        private SpriteRenderer spriteRndr;
         private float GCost;
         private float HCost;
         public float FCost => GCost + HCost;
 
-        public Node(bool walkable, Vector2Int pos) {
-            Walkable = walkable;
-            GridPos = pos;
+        public void SetWalkable(bool _bool) {
+            Walkable = _bool;
+        }
+
+        public void SetColorOfSprite(Color _color) {
+            spriteRndr.color = _color;
+        }
+
+        public Node(bool _walkable, Vector2Int _pos, SpriteRenderer _spriteRndr) {
+            Walkable = _walkable;
+            GridPos = _pos;
+            spriteRndr = _spriteRndr;
         }
     }
 }
