@@ -1,0 +1,68 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using AI.Interfaces;
+using UnityEngine;
+
+namespace AI {
+
+    public class Agent : MonoBehaviour {
+        [SerializeField] private Grid grid;
+        [SerializeField] private float moveSpeed = 5f;
+
+        private IAlgorithm algorithm;
+        private Coroutine followRoutine;
+
+        public void SetAlgorithm(IAlgorithm algo) => algorithm = algo;
+
+        public void MoveTo(Node goal) {
+            if(algorithm == null) {
+                Debug.LogError("No algorithm assigned to Agent.");
+                return;
+            }
+
+            Node start = grid.GetNodeFromWorld(transform.position);
+
+            if(start == null || goal == null) {
+                Debug.LogWarning("Start or goal node invalid.");
+                return;
+            }
+
+            List<Node> path = algorithm.FindPath(grid, start, goal, out List<Node> explored);
+            PathfindingVisualizer.Instance?.ShowExplored(explored);
+
+            if(path == null || path.Count == 0) {
+                Debug.LogWarning("No path found.");
+                PathfindingVisualizer.Instance?.ShowNoPath();
+                return;
+            }
+
+            PathfindingVisualizer.Instance?.ShowPath(path);
+
+            if(followRoutine != null)
+                StopCoroutine(followRoutine);
+
+            followRoutine = StartCoroutine(FollowPath(path));
+        }
+
+        private IEnumerator FollowPath(List<Node> path) {
+            foreach(Node node in path) {
+                Vector3 target = new Vector3(
+                    node.WorldPosition.x,
+                    node.WorldPosition.y,
+                    transform.position.z
+                );
+
+                while((transform.position - target).sqrMagnitude > 0.01f) {
+                    transform.position = Vector3.MoveTowards(
+                        transform.position,
+                        target,
+                        moveSpeed * Time.deltaTime
+                    );
+                    yield return null;
+                }
+
+                transform.position = target;
+            }
+        }
+    }
+}

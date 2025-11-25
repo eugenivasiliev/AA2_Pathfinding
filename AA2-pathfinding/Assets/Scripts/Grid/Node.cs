@@ -1,28 +1,43 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AI {
 
     public class Node {
         public bool Walkable { get; private set; }
         public Vector2Int GridPos { get; private set; }
+        public Vector3 WorldPosition { get; private set; }
 
-        private SpriteRenderer spriteRndr;
-        private float GCost;
-        private float HCost;
-        public float FCost => GCost + HCost;
+        private SpriteRenderer spriteRenderer;
 
-        public void SetWalkable(bool _bool) {
-            Walkable = _bool;
+        public Node(bool walkable, Vector2Int gridPos, Vector3 worldPos, SpriteRenderer renderer) {
+            Walkable = walkable;
+            GridPos = gridPos;
+            WorldPosition = worldPos;
+            spriteRenderer = renderer;
         }
 
-        public void SetColorOfSprite(Color _color) {
-            spriteRndr.color = _color;
+        public void SetWalkable(bool walkable) {
+            Walkable = walkable;
+            UpdateVisual();
         }
 
-        public Node(bool _walkable, Vector2Int _pos, SpriteRenderer _spriteRndr) {
-            Walkable = _walkable;
-            GridPos = _pos;
-            spriteRndr = _spriteRndr;
+        public void ToggleWalkable() {
+            Walkable = !Walkable;
+            UpdateVisual();
+        }
+
+        public void SetColor(Color color) {
+            if(spriteRenderer != null) spriteRenderer.color = color;
+        }
+
+        public void ResetVisual() {
+            if(spriteRenderer != null) spriteRenderer.color = Color.white;
+        }
+
+        private void UpdateVisual() {
+            if(spriteRenderer == null) return;
+            spriteRenderer.color = Walkable ? Color.white : Color.black;
         }
     }
 }
