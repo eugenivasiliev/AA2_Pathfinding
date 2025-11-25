@@ -5,14 +5,14 @@ namespace AI {
 
     public class Node {
         public bool Walkable { get; private set; }
-        public Vector2Int GridPos { get; private set; }
+        public Vector2Int pos { get; private set; }
         public Vector3 WorldPosition { get; private set; }
 
         private SpriteRenderer spriteRenderer;
 
         public Node(bool walkable, Vector2Int gridPos, Vector3 worldPos, SpriteRenderer renderer) {
             Walkable = walkable;
-            GridPos = gridPos;
+            pos = gridPos;
             WorldPosition = worldPos;
             spriteRenderer = renderer;
         }

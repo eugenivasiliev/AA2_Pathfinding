@@ -65,7 +65,7 @@ namespace AI {
         public Node GetNodeFromWorld(Vector3 worldPos) => GetNode(WorldToGrid(worldPos));
 
         public int CalculateCost(Node from, Node to) {
-            if(from.GridPos.x != to.GridPos.x && from.GridPos.y != to.GridPos.y)
+            if(from.pos.x != to.pos.x && from.pos.y != to.pos.y)
                 return 14;
             return 10;
         }
@@ -77,7 +77,7 @@ namespace AI {
             };
 
             foreach(var d in dirs) {
-                Node n = GetNode(node.GridPos + d);
+                Node n = GetNode(node.pos + d);
                 if(n != null && n.Walkable) yield return n;
             }
 
@@ -87,7 +87,7 @@ namespace AI {
                     new Vector2Int(-1,1), new Vector2Int(-1,-1)
                 };
                 foreach(var d in diag) {
-                    Node n = GetNode(node.GridPos + d);
+                    Node n = GetNode(node.pos + d);
                     if(n != null && n.Walkable) yield return n;
                 }
             }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
-namespace AI {
+namespace AI.UI {
 
     public class PathfindingVisualizer : MonoBehaviour {
         public static PathfindingVisualizer Instance { get; private set; }
@@ -26,42 +27,45 @@ namespace AI {
         }
 
         public void ShowExplored(List<Node> explored) {
-            ClearExplored();
             if(explored == null) return;
+
+            HashSet<Node> keep = new HashSet<Node>(explored);
+            ClearExplored(keep);
+
             lastExplored = new List<Node>(explored);
-            foreach(var n in lastExplored) n.SetColor(exploredColor);
+            foreach(Node n in lastExplored) {
+                n.SetColor(exploredColor);
+            }
         }
 
         public void ShowPath(List<Node> path) {
-            ClearPath();
             if(path == null) return;
+
+            HashSet<Node> keep = new HashSet<Node>(path);
+            ClearPath(keep);
+
             lastPath = new List<Node>(path);
-            foreach(var n in lastPath) n.SetColor(pathColor);
+            foreach(Node n in lastPath) {
+                n.SetColor(pathColor);
+            }
         }
 
-        public void ShowNoPath() {
-            // Optional: flash or show UI. Keep simple for now.
-        }
-
-        public void ClearExplored() {
-            foreach(var n in lastExplored) {
-                if(n != null && n.Walkable) n.SetColor(defaultColor);
-                else if(n != null && !n.Walkable) n.SetColor(obstacleColor);
+        public void ClearExplored(HashSet<Node> keep) {
+            foreach(Node n in lastExplored) {
+                if(n == null) continue;
+                if(keep.Contains(n)) continue; // IMPORTANT
+                n.SetColor(n.Walkable ? defaultColor : obstacleColor);
             }
             lastExplored.Clear();
         }
 
-        public void ClearPath() {
-            foreach(var n in lastPath) {
-                if(n != null && n.Walkable) n.SetColor(defaultColor);
-                else if(n != null && !n.Walkable) n.SetColor(obstacleColor);
+        public void ClearPath(HashSet<Node> keep) {
+            foreach(Node n in lastPath) {
+                if(n == null) continue;
+                if(keep.Contains(n)) continue; // IMPORTANT
+                n.SetColor(n.Walkable ? defaultColor : obstacleColor);
             }
             lastPath.Clear();
-        }
-
-        public void ClearAll() {
-            ClearExplored();
-            ClearPath();
         }
     }
 }

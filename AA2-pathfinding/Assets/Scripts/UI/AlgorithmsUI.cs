@@ -22,7 +22,7 @@ namespace AI.UI {
         private List<IAlgorithm> algorithms;
 
         private void Start() {
-            algorithms = new List<IAlgorithm>() { new BFS(), new Dijkstra() };
+            algorithms = new List<IAlgorithm>() { new BFS(), new GreedyBFS(), new Dijkstra(), new Astar() };
 
             optionList.options.Clear();
             foreach(var alg in algorithms) optionList.options.Add(new TMP_Dropdown.OptionData(alg.Name));
@@ -33,10 +33,6 @@ namespace AI.UI {
             });
 
             agent.SetAlgorithm(algorithms[optionList.value]);
-
-            clearVisualsButton.onClick.AddListener(() => {
-                PathfindingVisualizer.Instance?.ClearAll();
-            });
         }
     }
 }

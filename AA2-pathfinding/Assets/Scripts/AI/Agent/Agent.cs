@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using AI.Interfaces;
+using AI.UI;
 using UnityEngine;
 
 namespace AI {
@@ -36,7 +37,6 @@ namespace AI {
 
             if(path == null || path.Count == 0) {
                 Debug.LogWarning("No path found.");
-                PathfindingVisualizer.Instance?.ShowNoPath();
                 return;
             }
 
