@@ -22,8 +22,7 @@ namespace AI {
         }
 
         public void ResetAll(Grid grid) {
-            // reset visuals in entire grid if needed
-            for(int x = 0; x < 1000; x++) break; // placeholder to avoid warnings
+            for(int x = 0; x < 1000; x++) break;
         }
 
         public void ShowExplored(List<Node> explored) {

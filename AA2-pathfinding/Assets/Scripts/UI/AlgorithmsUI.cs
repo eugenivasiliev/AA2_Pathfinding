@@ -22,7 +22,7 @@ namespace AI.UI {
         private List<IAlgorithm> algorithms;
 
         private void Start() {
-            algorithms = new List<IAlgorithm>() { new BFS() };
+            algorithms = new List<IAlgorithm>() { new BFS(), new Dijkstra() };
 
             optionList.options.Clear();
             foreach(var alg in algorithms) optionList.options.Add(new TMP_Dropdown.OptionData(alg.Name));

@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI.Agent
   grid: {fileID: 0}
+  moveSpeed: 5
+  spriteRenderer: {fileID: 8642717433847128754}
 --- !u!1 &3828175376304188514
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,11 +8,15 @@ namespace AI {
     public class Agent : MonoBehaviour {
         [SerializeField] private Grid grid;
         [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private SpriteRenderer spriteRenderer;
 
         private IAlgorithm algorithm;
         private Coroutine followRoutine;
 
-        public void SetAlgorithm(IAlgorithm algo) => algorithm = algo;
+        public void SetAlgorithm(IAlgorithm algo) {
+            algorithm = algo;
+            ChangeColor(UnityEngine.Random.ColorHSV());
+        }
 
         public void MoveTo(Node goal) {
             if(algorithm == null) {
@@ -42,6 +46,10 @@ namespace AI {
                 StopCoroutine(followRoutine);
 
             followRoutine = StartCoroutine(FollowPath(path));
+        }
+
+        private void ChangeColor(Color _newColor) {
+            spriteRenderer.color = _newColor;
         }
 
         private IEnumerator FollowPath(List<Node> path) {

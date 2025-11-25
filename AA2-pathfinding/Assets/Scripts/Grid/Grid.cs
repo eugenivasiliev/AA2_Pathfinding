@@ -64,6 +64,12 @@ namespace AI {
 
         public Node GetNodeFromWorld(Vector3 worldPos) => GetNode(WorldToGrid(worldPos));
 
+        public int CalculateCost(Node from, Node to) {
+            if(from.GridPos.x != to.GridPos.x && from.GridPos.y != to.GridPos.y)
+                return 14;
+            return 10;
+        }
+
         public IEnumerable<Node> GetNeighbors(Node node, bool allowDiagonals = false) {
             Vector2Int[] dirs = {
                 Vector2Int.up, Vector2Int.down,
