@@ -358,6 +358,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -631,6 +632,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -672,6 +674,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 296673960}
   m_CullTransparentMesh: 1
+--- !u!1 &342495084 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 761291499467444114, guid: cd4b3bd9fdf5b1449ba2ae426ed627ad, type: 3}
+  m_PrefabInstance: {fileID: 8496123363648888698}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &400210209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1773,6 +1780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cca29adb6cdb584f8fa78edbabc8ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI.PathfindingVisualizer
+  multiNodeInputHandler: {fileID: 1671711818}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   exploredColor: {r: 0.015686274, g: 0.8124652, b: 1, a: 1}
   pathColor: {r: 0.6493683, g: 0, b: 1, a: 1}
@@ -1850,6 +1858,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1671711817}
   - component: {fileID: 1671711815}
+  - component: {fileID: 1671711818}
   m_Layer: 0
   m_Name: InputHandler
   m_TagString: Untagged
@@ -1887,6 +1896,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1671711818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671711814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edfa3c05915489b43a2fd7288f90e650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AI.Input.MultiNodeInputHandler
+  worldCamera: {fileID: 259927274}
+  grid: {fileID: 1550409420}
+  clearPath: 0
+  clearExplored: 0
+  multiAgent: {fileID: 8496123363648888704}
+  singleAgent: {fileID: 8496123363648888702}
+  multiDestinationMode: 1
 --- !u!1 &2006696424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,6 +2011,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2178,19 +2207,38 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 761291499467444114, guid: cd4b3bd9fdf5b1449ba2ae426ed627ad, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8496123363648888704}
   m_SourcePrefab: {fileID: 100100000, guid: cd4b3bd9fdf5b1449ba2ae426ed627ad, type: 3}
 --- !u!114 &8496123363648888702 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2782165142077404116, guid: cd4b3bd9fdf5b1449ba2ae426ed627ad, type: 3}
   m_PrefabInstance: {fileID: 8496123363648888698}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 342495084}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cba3943d1614efc43b9d81a27b163bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI.Agent
+--- !u!114 &8496123363648888704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342495084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0606ef140a06d8418ca8ce883856b59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AI.MultiDestinationAgent
+  grid: {fileID: 1550409420}
+  agent: {fileID: 0}
+  multiDestinationEnabled: 1
+  bruteForceTSP: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ namespace AI {
 
     public class Node {
         public bool Walkable { get; private set; }
+        public bool Path { get; private set; }
         public Vector2Int pos { get; private set; }
         public Vector3 WorldPosition { get; private set; }
 
@@ -21,6 +22,11 @@ namespace AI {
             Walkable = walkable;
             UpdateVisual();
         }
+        public void SetAsPath(bool path)
+        {
+            Path = path;
+            //UpdateVisual();
+        }
 
         public void ToggleWalkable() {
             Walkable = !Walkable;
@@ -32,7 +38,14 @@ namespace AI {
         }
 
         public void ResetVisual() {
-            if(spriteRenderer != null) spriteRenderer.color = Color.white;
+            SetAsPath(false);
+            if (spriteRenderer != null) spriteRenderer.color = Color.white;
+        }
+
+        public void UpdateDestinationVisual()
+        {
+            if (spriteRenderer == null) return;
+            spriteRenderer.color = Color.green;
         }
 
         private void UpdateVisual() {

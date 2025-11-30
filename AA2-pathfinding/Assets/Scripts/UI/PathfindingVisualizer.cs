@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AI.Input;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace AI.UI {
 
     public class PathfindingVisualizer : MonoBehaviour {
         public static PathfindingVisualizer Instance { get; private set; }
+        [SerializeField] private MultiNodeInputHandler multiNodeInputHandler;
 
         [Header("Colors")]
         [SerializeField] private Color defaultColor = Color.white;
@@ -34,7 +36,9 @@ namespace AI.UI {
 
             lastExplored = new List<Node>(explored);
             foreach(Node n in lastExplored) {
-                n.SetColor(exploredColor);
+                if(n.Path == false)
+                    n.SetColor(exploredColor);
+                n.SetAsPath(false);
             }
         }
 
@@ -47,25 +51,32 @@ namespace AI.UI {
             lastPath = new List<Node>(path);
             foreach(Node n in lastPath) {
                 n.SetColor(pathColor);
+                n.SetAsPath(true);
             }
         }
 
         public void ClearExplored(HashSet<Node> keep) {
-            foreach(Node n in lastExplored) {
+            if (multiNodeInputHandler.multiDestinationMode == true && multiNodeInputHandler.clearExplored == false) return;
+            foreach (Node n in lastExplored) {
                 if(n == null) continue;
                 if(keep.Contains(n)) continue; // IMPORTANT
                 n.SetColor(n.Walkable ? defaultColor : obstacleColor);
             }
             lastExplored.Clear();
+            multiNodeInputHandler.clearExplored = false;
         }
 
         public void ClearPath(HashSet<Node> keep) {
-            foreach(Node n in lastPath) {
+            if (multiNodeInputHandler.multiDestinationMode == true && multiNodeInputHandler.clearPath == false) return;
+            foreach (Node n in lastPath) {
                 if(n == null) continue;
                 if(keep.Contains(n)) continue; // IMPORTANT
+                
+                n.SetAsPath(false);
                 n.SetColor(n.Walkable ? defaultColor : obstacleColor);
             }
             lastPath.Clear();
+            multiNodeInputHandler.clearPath = false;
         }
     }
 }
