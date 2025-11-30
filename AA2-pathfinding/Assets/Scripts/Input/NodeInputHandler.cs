@@ -36,6 +36,7 @@ namespace AI.Input {
 
             if(toggleObstacle) {
                 node.ToggleWalkable();
+                agent.UpdatePath();
             }
         }
     }

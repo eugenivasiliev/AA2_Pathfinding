@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using AI.Interfaces;
 using AI.UI;
@@ -13,6 +14,8 @@ namespace AI {
 
         private IAlgorithm algorithm;
         private Coroutine followRoutine;
+
+        private List<Node> path;
 
         public void SetAlgorithm(IAlgorithm algo) {
             algorithm = algo;
@@ -32,7 +35,7 @@ namespace AI {
                 return;
             }
 
-            List<Node> path = algorithm.FindPath(grid, start, goal, out List<Node> explored);
+            this.path = algorithm.FindPath(grid, start, goal, out List<Node> explored);
             PathfindingVisualizer.Instance?.ShowExplored(explored);
 
             if(path == null || path.Count == 0) {
@@ -71,6 +74,21 @@ namespace AI {
 
                 transform.position = target;
             }
+        }
+
+        public void UpdatePath()
+        {
+            if (followRoutine != null)
+                StopCoroutine(followRoutine);
+
+            if (algorithm is not IDynamic) return;
+
+            path = (algorithm as IDynamic).UpdatePath(grid.GetNodeFromWorld(transform.position), out List<Node> exploredNodes);
+
+            PathfindingVisualizer.Instance?.ShowExplored(exploredNodes);
+            PathfindingVisualizer.Instance?.ShowPath(path);
+
+            followRoutine = StartCoroutine(FollowPath(path));
         }
     }
 }

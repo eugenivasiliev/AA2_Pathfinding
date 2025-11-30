@@ -11,7 +11,7 @@ namespace AI {
         public List<Node> FindPath(Grid grid, Node start, Node goal, out List<Node> exploredNodes) {
             exploredNodes = new List<Node>();
 
-            PriorityQueue<Node> frontier = new PriorityQueue<Node>();
+            PriorityQueue<Node, float> frontier = new PriorityQueue<Node, float>();
             Dictionary<Node, Node> cameFrom = new();
             Dictionary<Node, int> costSoFar = new();
 

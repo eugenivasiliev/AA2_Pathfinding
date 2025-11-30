@@ -92,5 +92,9 @@ namespace AI {
                 }
             }
         }
+
+        public IEnumerable<Node> GetNodes() {
+            foreach(Node node in nodes) yield return node;
+        } 
     }
 }
