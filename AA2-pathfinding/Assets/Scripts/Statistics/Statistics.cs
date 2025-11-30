@@ -33,16 +33,29 @@ namespace Statistics
         
         public List<IAlgorithm> algorithms = new List<IAlgorithm>() { new BFS(), new GreedyBFS(), new Dijkstra(), new Astar() };
         public Dictionary<string, int> exploredNodesCount = new Dictionary<string, int>();
+        public Dictionary<string, int> minExploredNodesCount = new Dictionary<string, int>();
+        public Dictionary<string, int> maxExploredNodesCount = new Dictionary<string, int>();
         public Dictionary<string, int> pathLengthsCount = new Dictionary<string, int>();
+        public Dictionary<string, int> minPathLengthsCount = new Dictionary<string, int>();
+        public Dictionary<string, int> maxPathLengthsCount = new Dictionary<string, int>();
 
         public void Init()
         {
             exploredNodesCount.Clear();
+            minExploredNodesCount.Clear();
+            maxExploredNodesCount.Clear();
             pathLengthsCount.Clear();
+            minPathLengthsCount.Clear();
+            maxPathLengthsCount.Clear();
+            
             foreach (var algorithm in algorithms)
             {
                 exploredNodesCount[algorithm.Name] = 0;
+                minExploredNodesCount[algorithm.Name] = int.MaxValue;
+                maxExploredNodesCount[algorithm.Name] = 0;
                 pathLengthsCount[algorithm.Name] = 0;
+                minPathLengthsCount[algorithm.Name] = int.MaxValue;
+                maxPathLengthsCount[algorithm.Name] = 0;
             }
         }
 
@@ -77,13 +90,21 @@ namespace Statistics
             foreach (var algorithm in algorithms)
             {
                 labelInstance = GameObject.Instantiate(textPrefab, pathLengths.transform);
-                labelInstance.GetComponent<TMP_Text>().text = "\t" + algorithm.Name + ": " + pathLengthsCount[algorithm.Name];
+                labelInstance.GetComponent<TMP_Text>().text = 
+                    algorithm.Name + 
+                    ": Min " + minPathLengthsCount[algorithm.Name] + 
+                    " Max " + maxPathLengthsCount[algorithm.Name] + 
+                    " Avg " + (float)pathLengthsCount[algorithm.Name] / (float)TestCount;
                 GameObject instance = GameObject.Instantiate(sliderPrefab, pathLengths.transform);
                 instance.name = algorithm.Name;
                 instance.GetComponent<Slider>().value = ((float)pathLengthsCount[algorithm.Name]) / ((float)maxPathCount);
 
                 labelInstance = GameObject.Instantiate(textPrefab, exploredNodes.transform);
-                labelInstance.GetComponent<TMP_Text>().text = "\t" + algorithm.Name + ": " + exploredNodesCount[algorithm.Name];
+                labelInstance.GetComponent<TMP_Text>().text =
+                    algorithm.Name +
+                    ": Min " + minExploredNodesCount[algorithm.Name] +
+                    " Max " + maxExploredNodesCount[algorithm.Name] +
+                    " Avg " + (float)exploredNodesCount[algorithm.Name] / (float)TestCount;
                 instance = GameObject.Instantiate(sliderPrefab, exploredNodes.transform);
                 instance.name = algorithm.Name;
                 instance.GetComponent<Slider>().value = ((float)exploredNodesCount[algorithm.Name]) / ((float)maxExploredCount);

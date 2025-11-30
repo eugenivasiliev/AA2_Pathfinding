@@ -25,6 +25,17 @@ namespace AI.Input {
             InputSystem.actions.FindAction("Previous").started += ctx => {
                 StartCoroutine(Statistics.Statistics.Instance.PerformTest());
                 };
+
+            InputSystem.actions.FindAction("Next").started += ctx =>
+            {
+                grid.width = 20;
+                grid.height = 20;
+                grid.cellSize = 1;
+
+                grid.Init();
+
+                agent.transform.position = Vector3.one * 10;
+            };
         }
 
         private void Update() {
