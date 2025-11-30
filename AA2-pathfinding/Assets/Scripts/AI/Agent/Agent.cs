@@ -12,10 +12,25 @@ namespace AI {
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private SpriteRenderer spriteRenderer;
 
+        private static Agent instance;
+        public static Agent Instance { get { return instance; } }
+
         private IAlgorithm algorithm;
         private Coroutine followRoutine;
+        public Coroutine FollowRoutine { get => followRoutine; }
 
         private List<Node> path;
+
+        private void Start()
+        {
+            if(instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            instance = this;
+        }
 
         public void SetAlgorithm(IAlgorithm algo) {
             algorithm = algo;
@@ -74,6 +89,8 @@ namespace AI {
 
                 transform.position = target;
             }
+
+            followRoutine = null;
         }
 
         public void UpdatePath()

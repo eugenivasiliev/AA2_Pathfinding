@@ -17,23 +17,40 @@ namespace AI {
         private Node[,] nodes;
 
         private void Awake() {
-            if(nodePrefab == null) {
+            Init();
+        }
+
+        public void Init()
+        {
+
+            NodePrefab[] nodePrefabs = GameObject.FindObjectsByType<NodePrefab>(FindObjectsSortMode.None);
+            foreach (NodePrefab prefab in nodePrefabs)
+            {
+                Destroy(prefab.gameObject);
+            }
+
+            if (nodePrefab == null)
+            {
                 Debug.LogError("⚠️ Node prefab missing!");
                 return;
             }
 
             nodes = new Node[width, height];
 
-            for(int x = 0; x < width; x++) {
-                for(int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
                     Vector2Int gridPos = new(x, y);
                     Vector3 worldPos = GridToWorld(gridPos);
 
                     GameObject go = Instantiate(nodePrefab, worldPos, Quaternion.identity, transform);
                     go.transform.position = worldPos;
+                    go.transform.localScale = Vector3.one * cellSize;
 
                     NodePrefab np = go.GetComponent<NodePrefab>();
-                    if(np == null) {
+                    if (np == null)
+                    {
                         Debug.LogError("Node prefab MUST contain NodePrefab component.");
                         continue;
                     }

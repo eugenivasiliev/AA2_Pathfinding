@@ -9,8 +9,9 @@ namespace AI {
         private void Update() {
             Vector2Int pos = Vector2Int.RoundToInt(transform.position);
             if(pos != lastPos) {
-                grid.GetNode(lastPos).SetWalkable(true);
-                grid.GetNode(pos).SetWalkable(false);
+                grid.GetNode(lastPos)?.SetWalkable(true);
+                grid.GetNode(pos)?.SetWalkable(false);
+                Agent.Instance.UpdatePath();
                 lastPos = pos;
             }
         }

@@ -10,6 +10,14 @@ namespace AI.Input {
 
         private void Awake() {
             if(worldCamera == null) worldCamera = Camera.main;
+
+            Statistics.Statistics.Instance = new Statistics.Statistics();
+
+            Statistics.Statistics.Instance.grid = grid;
+
+            InputSystem.actions.FindAction("Jump").started += ctx => {
+                StartCoroutine(Statistics.Statistics.Instance.PerformTest());
+                };
         }
 
         private void Update() {
