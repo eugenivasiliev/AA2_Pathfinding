@@ -4,9 +4,11 @@ using AI.Interfaces;
 using AI.UI;
 using UnityEngine;
 
-namespace AI {
+namespace AI
+{
 
-    public class MultiDestinationAgent : MonoBehaviour {
+    public class MultiDestinationAgent : MonoBehaviour
+    {
         [SerializeField] private Grid grid;
         [SerializeField] public Agent agent;
         [SerializeField] private bool multiDestinationEnabled = true;
@@ -15,6 +17,8 @@ namespace AI {
         private Queue<Node> destinations = new Queue<Node>();
         private bool isMoving = false;
         private bool queueActive = false;
+
+        private Vector3 startMovementPosition;
 
         public void OptimizeDestinations()
         {
@@ -36,11 +40,14 @@ namespace AI {
         {
             destinations.Enqueue(node);
         }
+
         public void StartMovement()
         {
             PathfindingVisualizer.Instance?.ResetAll(grid);
             if (isMoving || destinations.Count == 0)
                 return;
+
+            startMovementPosition = agent.transform.position;
 
             queueActive = true;
             OptimizeQueue();
@@ -65,11 +72,12 @@ namespace AI {
         {
             Vector3 finalPos = new Vector3(target.WorldPosition.x, target.WorldPosition.y, agent.transform.position.z);
 
-            while (agent.transform.position != finalPos)
+            while ((agent.transform.position - finalPos).sqrMagnitude > 0.01f)
                 yield return null;
 
             MoveToNextDestination();
         }
+
         public void ClearDestinations()
         {
             destinations.Clear();
@@ -85,17 +93,21 @@ namespace AI {
             destinations.Clear();
 
             List<Node> optimizedOrder;
-            Vector3 startPos = agent.transform.position;
-            if (bruteForceTSP) {
+            Vector3 startPos = startMovementPosition;
+
+            if (bruteForceTSP)
                 optimizedOrder = SolveTSPBruteForce(startPos, nodes);
-            }
             else
-            {
                 optimizedOrder = SolveTSP(startPos, nodes);
-            }
 
             foreach (var n in optimizedOrder)
                 destinations.Enqueue(n);
+
+            Node startNode = grid.GetNodeFromWorld(startMovementPosition);
+            if (startNode != null)
+            {
+                destinations.Enqueue(startNode);
+            }
         }
 
         private List<Node> SolveTSPBruteForce(Vector3 startPos, List<Node> nodes)
@@ -113,6 +125,8 @@ namespace AI {
                     cost += Vector3.Distance(currentPos, node.WorldPosition);
                     currentPos = node.WorldPosition;
                 }
+
+                cost += Vector3.Distance(currentPos, startPos);
 
                 if (cost < bestCost)
                 {
@@ -150,8 +164,10 @@ namespace AI {
                 currentPos = nearest.WorldPosition;
             }
 
+
             return path;
         }
+
 
         private IEnumerable<List<Node>> Permute(List<Node> list)
         {
@@ -169,13 +185,9 @@ namespace AI {
                 if (indexes[k] < k)
                 {
                     if (k % 2 == 0)
-                    {
                         Swap(list, 0, k);
-                    }
                     else
-                    {
                         Swap(list, indexes[k], k);
-                    }
 
                     yield return new List<Node>(list);
 
@@ -189,6 +201,7 @@ namespace AI {
                 }
             }
         }
+
         private void Swap(List<Node> list, int a, int b)
         {
             Node temp = list[a];

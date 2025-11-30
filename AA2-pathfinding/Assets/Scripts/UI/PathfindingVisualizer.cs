@@ -47,7 +47,6 @@ namespace AI.UI {
             foreach(Node n in lastExplored) {
                 if(n.Path == false)
                     n.SetColor(exploredColor);
-                n.SetAsPath(false);
             }
         }
 
@@ -81,7 +80,6 @@ namespace AI.UI {
                 if(n == null) continue;
                 if(keep.Contains(n)) continue; // IMPORTANT
                 
-                n.SetAsPath(false);
                 n.SetColor(n.Walkable ? defaultColor : obstacleColor);
             }
             lastPath.Clear();

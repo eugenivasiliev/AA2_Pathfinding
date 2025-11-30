@@ -25,7 +25,6 @@ namespace AI {
         public void SetAsPath(bool path)
         {
             Path = path;
-            //UpdateVisual();
         }
 
         public void ToggleWalkable() {
@@ -38,7 +37,6 @@ namespace AI {
         }
 
         public void ResetVisual() {
-            SetAsPath(false);
             if (spriteRenderer != null) spriteRenderer.color = Color.white;
         }
 
