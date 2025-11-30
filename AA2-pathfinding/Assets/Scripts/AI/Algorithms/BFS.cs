@@ -41,6 +41,8 @@ namespace AI.Algorithms {
             for(Node n = goal; n != null; n = cameFrom[n]) path.Add(n);
             path.Reverse();
 
+            (this as IAlgorithm).UploadData(path, exploredNodes);
+
             return path;
         }
     }

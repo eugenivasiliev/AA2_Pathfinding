@@ -25,7 +25,16 @@ namespace AI.UI {
         }
 
         public void ResetAll(Grid grid) {
-            for(int x = 0; x < 1000; x++) break;
+            foreach (Node node in grid.GetNodes())
+            {
+                if (node.Walkable)
+                {
+                    node.SetColor(defaultColor);
+                } else
+                {
+                    node.SetColor(Color.black);
+                }
+            }
         }
 
         public void ShowExplored(List<Node> explored) {

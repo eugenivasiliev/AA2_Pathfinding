@@ -53,6 +53,9 @@ namespace AI {
             }
 
             path.Reverse();
+
+            (this as IAlgorithm).UploadData(path, exploredNodes);
+
             return path;
         }
 

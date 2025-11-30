@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace AI.Input {
 
@@ -7,6 +8,9 @@ namespace AI.Input {
         [SerializeField] private Camera worldCamera;
         [SerializeField] private Agent agent;
         [SerializeField] private Grid grid;
+        [SerializeField] private VerticalLayoutGroup statsLayout;
+        [SerializeField] private GameObject slider;
+        [SerializeField] private GameObject text;
 
         private void Awake() {
             if(worldCamera == null) worldCamera = Camera.main;
@@ -14,8 +18,11 @@ namespace AI.Input {
             Statistics.Statistics.Instance = new Statistics.Statistics();
 
             Statistics.Statistics.Instance.grid = grid;
+            Statistics.Statistics.Instance.layoutGroup = statsLayout;
+            Statistics.Statistics.Instance.sliderPrefab = slider;
+            Statistics.Statistics.Instance.textPrefab = text;
 
-            InputSystem.actions.FindAction("Jump").started += ctx => {
+            InputSystem.actions.FindAction("Previous").started += ctx => {
                 StartCoroutine(Statistics.Statistics.Instance.PerformTest());
                 };
         }

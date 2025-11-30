@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using AI;
 using AI.Algorithms;
 using AI.Interfaces;
+using AI.UI;
+using TMPro;
+using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Statistics
 {
@@ -14,16 +18,22 @@ namespace Statistics
 
         public readonly int TestCount = 20;
 
-        public readonly int MinGridSize = 10;
+        public readonly int MinGridSize = 20;
         public readonly int MaxGridSize = 50;
 
-        public readonly float WallProbability = 0.1f;
+        public readonly float WallProbability = 0.3f;
+
+        public bool isActive = false;
 
         public AI.Grid grid;
+
+        public VerticalLayoutGroup layoutGroup;
+        public GameObject sliderPrefab;
+        public GameObject textPrefab;
         
-        private List<IAlgorithm> algorithms = new List<IAlgorithm>() { new BFS(), new GreedyBFS(), new Dijkstra(), new Astar(), new DstarLite() };
-        private Dictionary<IAlgorithm, int> exploredNodesCount = new Dictionary<IAlgorithm, int>();
-        private Dictionary<IAlgorithm, int> pathLengthsCount = new Dictionary<IAlgorithm, int>();
+        public List<IAlgorithm> algorithms = new List<IAlgorithm>() { new BFS(), new GreedyBFS(), new Dijkstra(), new Astar() };
+        public Dictionary<string, int> exploredNodesCount = new Dictionary<string, int>();
+        public Dictionary<string, int> pathLengthsCount = new Dictionary<string, int>();
 
         public void Init()
         {
@@ -31,16 +41,62 @@ namespace Statistics
             pathLengthsCount.Clear();
             foreach (var algorithm in algorithms)
             {
-                exploredNodesCount[algorithm] = 0;
-                pathLengthsCount[algorithm] = 0;
+                exploredNodesCount[algorithm.Name] = 0;
+                pathLengthsCount[algorithm.Name] = 0;
             }
+        }
+
+        public void DisplayStats()
+        {
+            int maxPathCount = 0;
+            int maxExploredCount = 0;
+            foreach (var algorithm in algorithms)
+            {
+                maxPathCount = Mathf.Max(maxPathCount, pathLengthsCount[algorithm.Name]);
+                maxExploredCount = Mathf.Max(maxExploredCount, exploredNodesCount[algorithm.Name]);
+            }
+
+            Debug.Log(maxPathCount + " " +  maxExploredCount);
+
+            foreach (GameObject child in layoutGroup.transform)
+            {
+                GameObject.Destroy(child);
+            }
+
+            GameObject subVert = new GameObject();
+            subVert.AddComponent<VerticalLayoutGroup>();
+            subVert.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
+            
+            GameObject pathLengths = GameObject.Instantiate(subVert, layoutGroup.transform);
+            GameObject labelInstance = GameObject.Instantiate(textPrefab, pathLengths.transform);
+            labelInstance.GetComponent<TMP_Text>().text = "Paths: ";
+            GameObject exploredNodes = GameObject.Instantiate(subVert, layoutGroup.transform);
+            labelInstance = GameObject.Instantiate(textPrefab, exploredNodes.transform);
+            labelInstance.GetComponent<TMP_Text>().text = "Explored Nodes: ";
+
+            foreach (var algorithm in algorithms)
+            {
+                labelInstance = GameObject.Instantiate(textPrefab, pathLengths.transform);
+                labelInstance.GetComponent<TMP_Text>().text = "\t" + algorithm.Name + ": " + pathLengthsCount[algorithm.Name];
+                GameObject instance = GameObject.Instantiate(sliderPrefab, pathLengths.transform);
+                instance.name = algorithm.Name;
+                instance.GetComponent<Slider>().value = ((float)pathLengthsCount[algorithm.Name]) / ((float)maxPathCount);
+
+                labelInstance = GameObject.Instantiate(textPrefab, exploredNodes.transform);
+                labelInstance.GetComponent<TMP_Text>().text = "\t" + algorithm.Name + ": " + exploredNodesCount[algorithm.Name];
+                instance = GameObject.Instantiate(sliderPrefab, exploredNodes.transform);
+                instance.name = algorithm.Name;
+                instance.GetComponent<Slider>().value = ((float)exploredNodesCount[algorithm.Name]) / ((float)maxExploredCount);
+            }
+
         }
 
         public IEnumerator PerformTest()
         {
-            Debug.Log("AAAAA");
 
             Init();
+
+            isActive = true;
 
             int tests = 0;
             while (tests < TestCount)
@@ -56,19 +112,34 @@ namespace Statistics
                     node.SetWalkable(UnityEngine.Random.Range(0f, 1f) >= WallProbability);
                 }
 
-                UnityEngine.Vector3 startPos = Agent.Instance.transform.position;
-                Node start = grid.GetNodeFromWorld(startPos);
+                UnityEngine.Vector2Int startPos;
+                Node start;
 
-                UnityEngine.Vector2Int goalPos = new UnityEngine.Vector2Int(
-                    UnityEngine.Random.Range(0, grid.width), UnityEngine.Random.Range(0, grid.height)
-                    );
+                do
+                {
+                    startPos = new UnityEngine.Vector2Int(
+                        UnityEngine.Random.Range(0, grid.width), UnityEngine.Random.Range(0, grid.height)
+                        );
+                    start = grid.GetNode(startPos);
+                } while (!start.Walkable);
 
-                Node goal = grid.GetNode(goalPos);
+                UnityEngine.Vector2Int goalPos;
+                Node goal;
+
+                do
+                {
+                    goalPos = new UnityEngine.Vector2Int(
+                        UnityEngine.Random.Range(0, grid.width), UnityEngine.Random.Range(0, grid.height)
+                        );
+                    goal = grid.GetNode(goalPos);
+                } while(!goal.Walkable);
 
                 foreach (IAlgorithm algorithm in algorithms)
                 {
+                    PathfindingVisualizer.Instance.ResetAll(grid);
+
                     Agent.Instance.SetAlgorithm(algorithm);
-                    Agent.Instance.transform.position = startPos;
+                    Agent.Instance.transform.position = start.WorldPosition;
                     Agent.Instance.MoveTo(goal);
 
                     while(Agent.Instance.FollowRoutine != null) yield return new WaitForEndOfFrame();
@@ -76,6 +147,10 @@ namespace Statistics
 
                 tests++;
             }
+
+            DisplayStats();
+
+            isActive = false;
 
             yield return null;
         }
