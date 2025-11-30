@@ -16,6 +16,10 @@ namespace AI {
         private bool isMoving = false;
         private bool queueActive = false;
 
+        public void OptimizeDestinations()
+        {
+            bruteForceTSP = !bruteForceTSP;
+        }
 
         private void Awake()
         {

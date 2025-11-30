@@ -18,6 +18,14 @@ namespace AI.Input {
         [SerializeField] public bool multiDestinationMode = false;
 
         private NodeInputHandler nodeInput;
+
+        public void multiDestination()
+        {
+            multiDestinationMode = !multiDestinationMode;
+            Debug.Log("multiDestinationMode changed");
+            Debug.Log(multiDestinationMode);
+        }
+
         private void Awake()
         {
             if (worldCamera == null)

@@ -14,10 +14,16 @@ namespace AI.UI {
 
         [SerializeField] private Grid grid;
 
+        [SerializeField] public MultiDestinationAgent multiAgent;
+
         [Header("UI")]
         [SerializeField] private TMP_Dropdown optionList;
 
         [SerializeField] private Button clearVisualsButton;
+        
+        [SerializeField] private Button optimizeButton;
+
+        [SerializeField] private Button multipathButton;
 
         private List<IAlgorithm> algorithms;
 
